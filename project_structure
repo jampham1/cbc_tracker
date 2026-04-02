@@ -1,0 +1,23 @@
+cbc_analyzer/
+│
+├── data/
+│   └── cbc_synthetic.csv
+│
+├── src/                        ← reusable .py modules
+│   ├── generate_data.py        ← Phase 1 (already done)
+│   ├── preprocessing.py        ← Phase 2
+│   ├── model.py                ← Phase 3
+│   ├── train.py                ← Phase 4
+│   └── evaluate.py             ← Phase 5
+│
+├── notebooks/                  ← exploration & visualization
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_preprocessing_checks.ipynb
+│   ├── 03_model_experiments.ipynb
+│   └── 04_results_analysis.ipynb
+│
+├── outputs/
+│   ├── checkpoints/            ← saved model weights
+│   └── figures/                ← saved plots
+│
+└── requirements.txt
