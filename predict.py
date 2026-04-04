@@ -137,6 +137,7 @@ def load_inference_artifacts(
         n_static_features = n_static_features,
     )
     model.load_state_dict(torch.load(ckpt_path, map_location=device))
+    model = model.to(device)
     model.eval()
     print(f'Model weights loaded from {ckpt_path}')
     print(f'Running on: {device}')
