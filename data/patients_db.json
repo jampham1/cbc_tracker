@@ -490,7 +490,7 @@
     ],
     "_anomaly_type": "sudden_drop",
     "last_peak_score": 1.0,
-    "last_anomaly_type": "sustained_elevation"
+    "last_anomaly_type": "sudden_drop"
   },
   "PT0002": {
     "name": "David Okafor",
@@ -951,7 +951,7 @@
     ],
     "_anomaly_type": "sudden_drop",
     "last_peak_score": 1.0,
-    "last_anomaly_type": "sustained_elevation"
+    "last_anomaly_type": "sudden_drop"
   },
   "PT0003": {
     "name": "Yuki Tanaka",
@@ -3348,7 +3348,9 @@
         "MONO": 1.8
       }
     ],
-    "_anomaly_type": "sustained_elevation"
+    "_anomaly_type": "sustained_elevation",
+    "last_peak_score": 1.0,
+    "last_anomaly_type": "sustained_elevation"
   },
   "PT0008": {
     "name": "Henrik Larsson",
@@ -4725,7 +4727,9 @@
         "MONO": 0.07
       }
     ],
-    "_anomaly_type": "erratic"
+    "_anomaly_type": "erratic",
+    "last_peak_score": 1.0,
+    "last_anomaly_type": "erratic"
   },
   "PT0011": {
     "name": "Fatima Al-Rashid",

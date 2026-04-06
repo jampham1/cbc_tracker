@@ -181,27 +181,67 @@ def load_model():
         return None, None, None
 
 # ── Anomaly type classifier ───────────────────────────────────────────────────
-def classify_anomaly_type(scores: np.ndarray, threshold: float = 0.5) -> str:
-    flagged = (scores >= threshold).astype(int)
-    if flagged.sum() == 0:
+def classify_anomaly_type(patient_df: pd.DataFrame, pred_df: pd.DataFrame,
+                           threshold: float = 0.5) -> str:
+    """
+    Classify anomaly type from the RAW CBC trajectory of flagged draws,
+    not from the score pattern alone.
+
+    Strategy:
+      1. Identify which draws the model flagged (score >= threshold)
+      2. Look at the actual CBC values in those flagged draws
+      3. Compare flagged-draw means to the patient's own pre-anomaly baseline
+      4. Classify based on direction and variance of the deviation
+    """
+    if pred_df is None or "anomaly_score" not in pred_df.columns:
+        return "unknown"
+
+    scores = pred_df["anomaly_score"].fillna(0).values
+    if (scores >= threshold).sum() == 0:
         return "none"
-    runs, current = [], 0
-    for f in flagged:
-        if f == 1:
-            current += 1
-        else:
-            if current > 0:
-                runs.append(current)
-            current = 0
-    if current > 0:
-        runs.append(current)
-    if not runs:
+
+    # Merge scores into patient_df on timestamp
+    merged = patient_df.merge(
+        pred_df[["timestamp_day", "anomaly_score"]],
+        on="timestamp_day", how="left"
+    )
+    merged["anomaly_score"] = merged["anomaly_score"].fillna(0)
+
+    CBC_COLS = ["WBC", "ANC", "PLT", "HGB", "LYM"]
+    available = [c for c in CBC_COLS if c in merged.columns]
+
+    flagged   = merged[merged["anomaly_score"] >= threshold]
+    unflagged = merged[merged["anomaly_score"] <  threshold]
+
+    if len(flagged) == 0 or len(unflagged) == 0:
         return "none"
-    if len(runs) >= 3:
+
+    # Use unflagged draws as the patient's personal baseline
+    baseline_means = unflagged[available].mean()
+    flagged_means  = flagged[available].mean()
+    flagged_stds   = flagged[available].std().fillna(0)
+
+    # Ratio of flagged mean to baseline — >1 means elevated, <1 means dropped
+    ratios = flagged_means / (baseline_means + 1e-6)
+    mean_ratio = float(ratios.mean())
+
+    # Coefficient of variation in flagged draws — high = erratic
+    baseline_stds = unflagged[available].std().fillna(0) + 1e-6
+    cv_ratio = float((flagged_stds / baseline_stds).mean())
+
+    # Decision logic
+    if cv_ratio > 2.5:
+        # Flagged draws are much more variable than baseline — erratic
         return "erratic"
-    if max(runs) >= 5:
+    elif mean_ratio < 0.65:
+        # Flagged draws are substantially below the patient's own baseline
+        return "sudden_drop"
+    elif mean_ratio > 1.30:
+        # Flagged draws are substantially above the patient's own baseline
         return "sustained_elevation"
-    return "sudden_drop"
+    else:
+        # Flagged but not clearly directional — mild anomaly
+        return "erratic"
 
 # ── Score patient ─────────────────────────────────────────────────────────────
 def score_patient(pid: str, db: dict, model, preprocessor, device):
@@ -623,7 +663,7 @@ def main():
             if pred_df is not None and "anomaly_score" in pred_df.columns:
                 scores       = pred_df["anomaly_score"].dropna().values
                 peak_score   = float(scores.max()) if len(scores) else 0.0
-                anomaly_type = classify_anomaly_type(scores)
+                anomaly_type = classify_anomaly_type(patient_df, pred_df)
                 db[vp]["last_peak_score"]   = peak_score
                 db[vp]["last_anomaly_type"] = anomaly_type
                 save_patients(db)
