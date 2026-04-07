@@ -1,0 +1,22 @@
+# Core ML
+torch==2.11.0
+numpy==2.4.4
+scikit-learn==1.8.0
+scipy==1.17.1
+shap==0.51.0
+
+# Data
+pandas==3.0.2
+pyarrow==23.0.1
+
+# App & visualisation
+streamlit==1.56.0
+plotly==6.6.0
+seaborn==0.13.2
+matplotlib==3.10.8
+
+# Utilities
+requests==2.33.1
+tqdm==4.67.3
+GitPython==3.1.46
+PyYAML==6.0.3
