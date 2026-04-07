@@ -20,6 +20,8 @@ Cancer patients undergoing chemotherapy require frequent CBC monitoring. Manual 
 
 > **Important:** This project is a research prototype trained on synthetic data. It is not validated for clinical use. All predictions should be reviewed by a qualified clinician.
 
+![Patient Management](screenshots/screenshot_1.png)
+![Patient Analytics](screenshots/screenshot_2.png)
 ---
 
 ## Anomaly Types Detected
