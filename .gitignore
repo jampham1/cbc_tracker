@@ -1,0 +1,70 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.env
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Model outputs ─────────────────────────────────────────────────────────────
+# Checkpoint weights can be large — regenerate with train.py
+outputs/checkpoints/
+outputs/figures/
+
+# Keep the outputs directory itself
+!outputs/.gitkeep
+
+# ── Preprocessor & SHAP cache ─────────────────────────────────────────────────
+# These are derived from data and should be regenerated
+outputs/preprocessor.pkl
+outputs/shap_results.pkl
+outputs/training_history.json
+outputs/evaluation_results.json
+
+# ── Patient database ───────────────────────────────────────────────────────────
+# Contains patient records — never commit clinical data
+data/patients_db.json
+
+# Keep the data directory itself
+!data/.gitkeep
+
+# ── Synthetic training data ────────────────────────────────────────────────────
+# Large CSV — regenerate with phase1_generate_data.py
+data/cbc_synthetic.csv
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# ── IDEs ──────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── Logs & temp files ─────────────────────────────────────────────────────────
+*.log
+*.tmp
+*.temp
+.streamlit/secrets.toml
+
